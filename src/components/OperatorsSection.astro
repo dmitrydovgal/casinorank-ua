@@ -1,0 +1,24 @@
+---
+import { ArrowRight, Info } from '@lucide/astro';
+import SectionHead from './SectionHead.astro';
+import OperatorCard from './OperatorCard.astro';
+import { operators } from '../data/content';
+---
+<section class="section" id="catalog" aria-labelledby="catalog-title">
+  <div class="container">
+    <SectionHead id="catalog-title" title="Популярні оператори" text="Ознайомтеся з характеристиками операторів та перевірте актуальність інформації.">
+      <a class="link" href="/catalog">Переглянути всі оператори <ArrowRight size={16} aria-hidden="true" /></a>
+    </SectionHead>
+    <div class="grid">
+      {operators.map((op) => <OperatorCard op={op} />)}
+    </div>
+    <p id="catalog-empty" class="empty" hidden>Нічого не знайдено. Спробуйте іншу назву оператора.</p>
+    <p class="demo-note"><Info size={14} aria-hidden="true" /> Усі оператори, оцінки та дати на цій сторінці — вигадані демонстраційні дані.</p>
+  </div>
+</section>
+<style>
+  .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; margin-bottom: 24px; }
+  .empty { padding: 32px; text-align: center; color: var(--text-2); border: 1px dashed var(--line-strong); border-radius: var(--r-lg); margin-bottom: 24px; }
+  @media (max-width: 1200px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+</style>

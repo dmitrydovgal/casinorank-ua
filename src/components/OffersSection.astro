@@ -1,0 +1,27 @@
+---
+import { ArrowRight, TriangleAlert } from '@lucide/astro';
+import SectionHead from './SectionHead.astro';
+import BonusCard from './BonusCard.astro';
+import { featuredOffers } from '../data/offers';
+---
+<section class="section" id="offers" aria-labelledby="offers-title">
+  <div class="container">
+    <SectionHead id="offers-title" title="Пропозиції операторів" text="Інформація про умови пропозицій, вимоги та терміни дії.">
+      <a class="link" href="/bonuses">Усі бонуси <ArrowRight size={16} aria-hidden="true" /></a>
+    </SectionHead>
+    <div class="notice" role="note">
+      <TriangleAlert size={18} aria-hidden="true" />
+      <span>Демонстраційні приклади. Це не діючі пропозиції — завжди перевіряйте умови на сайті оператора.</span>
+    </div>
+    <div class="grid">
+      {featuredOffers.map((o) => <BonusCard offer={o} />)}
+    </div>
+  </div>
+</section>
+<style>
+  .notice { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; margin-bottom: 24px; border-radius: var(--r-md); background: rgb(244 184 74 / .08); border: 1px solid rgb(244 184 74 / .25); color: #f6d08a; font-size: 14px; }
+  .notice :global(svg) { flex: none; margin-top: 2px; color: var(--warn); }
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  @media (max-width: 1024px) { .grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+</style>

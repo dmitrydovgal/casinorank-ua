@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import OperatorsSection from '../components/OperatorsSection.astro';
+import Comparison from '../components/Comparison.astro';
+import OffersSection from '../components/OffersSection.astro';
+import Methodology from '../components/Methodology.astro';
+import Licensing from '../components/Licensing.astro';
+import News from '../components/News.astro';
+import Guides from '../components/Guides.astro';
+import { siteConfig } from '../config/site';
+---
+<Base>
+  <Hero />
+  {siteConfig.features.offers && <OffersSection />}
+  <OperatorsSection />
+  <Comparison />
+  <Methodology />
+  <Licensing />
+  <News />
+  <Guides />
+</Base>

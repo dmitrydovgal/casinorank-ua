@@ -1,0 +1,43 @@
+---
+import { ArrowRight, CalendarCheck, Star } from '@lucide/astro';
+import type { Operator } from '../data/content';
+interface Props { op: Operator }
+const { op } = Astro.props;
+---
+<article class="card card--hover op" data-operator={op.name.toLowerCase()}>
+  <header>
+    <span class="logo" style={`--h:${op.hue}`} aria-hidden="true">{op.initials}</span>
+    <div>
+      <h3>{op.name}</h3>
+      <span class={`badge badge--${op.status.tone === 'neutral' ? 'blue' : op.status.tone}`}>{op.status.label}</span>
+    </div>
+  </header>
+  <div class="rating" title="Ілюстративна оцінка, не є реальним рейтингом">
+    <Star size={16} fill="currentColor" aria-hidden="true" /> <b>{op.rating.toFixed(1)}</b>
+    <small>ілюстративна оцінка</small>
+  </div>
+  <dl>
+    {op.attributes.map((a) => <div><dt>{a.label}</dt><dd>{a.value}</dd></div>)}
+  </dl>
+  <footer>
+    <span class="date"><CalendarCheck size={14} aria-hidden="true" /> Перевірено: {op.verifiedAt}</span>
+    <a class="link" href={op.href}>Профіль <ArrowRight size={16} aria-hidden="true" /></a>
+  </footer>
+</article>
+<style>
+  .op { padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+  .op[hidden] { display: none; }
+  header { display: flex; align-items: center; gap: 16px; }
+  header > div { display: grid; gap: 6px; justify-items: start; }
+  .logo { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; font-weight: 800; font-size: 22px; color: #fff; flex: none;
+    background: linear-gradient(145deg, hsl(var(--h) 85% 58%), hsl(calc(var(--h) + 30) 80% 38%)); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .2); }
+  .rating { display: flex; align-items: center; gap: 6px; color: var(--warn); font-size: 15px; }
+  .rating b { color: var(--text); }
+  .rating small { color: var(--text-2); font-size: 12px; margin-left: 4px; }
+  dl { margin: 0; display: grid; gap: 0; border-top: 1px solid var(--line); }
+  dl div { display: flex; justify-content: space-between; gap: 12px; padding-block: 12px; border-bottom: 1px solid var(--line); font-size: 14px; }
+  dt { color: var(--text-2); }
+  dd { margin: 0; font-weight: 600; text-align: right; }
+  footer { margin-top: auto; display: flex; flex-direction: column; gap: 12px; }
+  .date { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-2); }
+</style>

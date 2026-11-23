@@ -1,0 +1,105 @@
+﻿---
+import { Check, Info } from '@lucide/astro';
+import SectionHead from './SectionHead.astro';
+import Icon from './Icon.astro';
+import { operators, compareRows } from '../data/content';
+
+const defaults = ['alpha', 'beta'];
+---
+<section class="section alt" id="compare" aria-labelledby="compare-title">
+  <div class="container">
+    <SectionHead id="compare-title" title="Порівнюйте операторів" text="Зіставляйте основні характеристики та знаходьте відмінності в умовах сервісів." />
+
+    <div class="picker" role="group" aria-label="Оберіть 2–3 операторів для порівняння">
+      <span class="muted label">Оберіть до 3:</span>
+      {operators.map((o) => (
+        <button type="button" class="chip" data-id={o.id} aria-pressed={defaults.includes(o.id) ? 'true' : 'false'}>
+          <Check size={14} aria-hidden="true" /> {o.name}
+        </button>
+      ))}
+    </div>
+
+    <div class="card wrap" tabindex="0" role="region" aria-label="Таблиця порівняння операторів">
+      <table id="cmp">
+        <thead>
+          <tr>
+            <th scope="col"><span class="visually-hidden">Характеристика</span></th>
+            {operators.map((o) => (
+              <th scope="col" data-col={o.id} hidden={!defaults.includes(o.id)}>
+                <span class="who"><i style={`--h:${o.hue}`}>{o.initials}</i>{o.name}</span>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {compareRows.map((r) => (
+            <tr>
+              <th scope="row"><Icon name={r.icon} size={16} /> {r.label}</th>
+              {operators.map((o) => (
+                <td data-col={o.id} hidden={!defaults.includes(o.id)} class={r.values[o.id].tone ? `t-${r.values[o.id].tone}` : ''}>
+                  {r.values[o.id].tone && r.values[o.id].tone !== 'neutral' && <span class="dot" aria-hidden="true"></span>}{r.values[o.id].text}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="foot">
+      <p class="demo-note"><Info size={14} aria-hidden="true" /> Демонстраційні дані. Реальний статус ліцензії перевіряйте в офіційних реєстрах.</p>
+      <a class="btn btn--primary" id="cmp-open" href="/compare?ids=alpha,beta">Відкрити порівняння</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .alt { background: linear-gradient(to bottom, transparent, rgb(16 26 43 / .55) 20%, rgb(16 26 43 / .55) 80%, transparent); }
+  .picker { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 24px; }
+  .label { font-size: 14px; margin-right: 4px; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding-inline: 16px; border-radius: 999px; border: 1px solid var(--line-strong); background: transparent; color: var(--text-2); font-weight: 700; font-size: 14px; cursor: pointer; transition: all .2s; }
+  .chip :global(svg) { opacity: 0; width: 0; transition: all .2s; }
+  .chip:hover { border-color: var(--blue); color: var(--text); }
+  .chip[aria-pressed='true'] { background: rgb(38 132 255 / .14); border-color: var(--blue); color: var(--text); }
+  .chip[aria-pressed='true'] :global(svg) { opacity: 1; width: 14px; color: var(--cyan); }
+  .wrap { overflow-x: auto; background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; min-width: 640px; }
+  th, td { padding: 20px 24px; text-align: left; border-bottom: 1px solid var(--line); font-size: 15px; vertical-align: middle; overflow-wrap: anywhere; }
+  th:not(:first-child), td { border-left: 1px solid var(--line-strong); }
+  tbody tr:last-child > * { border-bottom: 0; }
+  thead th { background: var(--elevated); font-size: 16px; }
+  thead th:first-child { width: 220px; }
+  tbody th { color: var(--text-2); font-weight: 600; white-space: nowrap; position: sticky; left: 0; background: var(--surface); }
+  tbody th :global(svg) { vertical-align: -3px; color: var(--soft-blue); margin-right: 8px; }
+  tbody tr:hover td, tbody tr:hover th { background: rgb(38 132 255 / .05); }
+  [hidden] { display: none !important; }
+  .who { display: inline-flex; align-items: center; gap: 12px; }
+  .who i { font-style: normal; width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; font-size: 14px; font-weight: 800; color: #fff; background: linear-gradient(145deg, hsl(var(--h) 85% 58%), hsl(calc(var(--h) + 30) 80% 38%)); }
+  td { font-weight: 600; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 10px; background: currentColor; }
+  .t-ok { color: var(--ok); } .t-warn { color: var(--warn); } .t-bad { color: var(--bad); }
+  .foot { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-top: 24px; flex-wrap: wrap; }
+  @media (max-width: 640px) { th, td { padding: 16px; font-size: 14px; } thead th:first-child { width: 150px; } .foot .btn { width: 100%; } }
+</style>
+
+<script>
+  const MIN = 2, MAX = 3;
+  const chips = [...document.querySelectorAll<HTMLButtonElement>('.picker .chip')];
+  const cta = document.getElementById('cmp-open') as HTMLAnchorElement;
+  const selected = () => chips.filter((c) => c.getAttribute('aria-pressed') === 'true');
+  const sync = () => {
+    const sel = selected().map((c) => c.dataset.id!);
+    document.querySelectorAll<HTMLElement>('#cmp [data-col]').forEach((el) => { el.hidden = !sel.includes(el.dataset.col!); });
+    const root = import.meta.env.BASE_URL.replace(/\/$/, '');
+    cta.href = `${root}/compare?ids=${sel.join(',')}`;
+  };
+  chips.forEach((c) => c.addEventListener('click', () => {
+    const on = c.getAttribute('aria-pressed') === 'true';
+    const count = selected().length;
+    if (on && count <= MIN) return;
+    if (!on && count >= MAX) selected()[0]?.setAttribute('aria-pressed', 'false');
+    c.setAttribute('aria-pressed', String(!on));
+    sync();
+  }));
+  sync();
+</script>

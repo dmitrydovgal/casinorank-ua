@@ -1,0 +1,42 @@
+---
+import { ArrowRight } from '@lucide/astro';
+import SectionHead from './SectionHead.astro';
+import Icon from './Icon.astro';
+import { licensingSteps } from '../data/content';
+---
+<section class="section" id="licensing" aria-labelledby="lic-title">
+  <div class="container">
+    <div class="panel card">
+      <div class="left">
+        <SectionHead id="lic-title" title="Ліцензії та регулювання" text="Дізнайтеся, як перевіряти ліцензійний статус оператора та де шукати офіційну інформацію." />
+        <a class="btn btn--ghost" href="/guides/license-check">Як перевірити ліцензію <ArrowRight size={18} aria-hidden="true" /></a>
+        <p class="disclaimer">Приклади на сайті не є підтвердженням наявності ліцензії у будь-якого оператора. Номери ліцензій тут не наводяться.</p>
+      </div>
+      <ol class="steps">
+        {licensingSteps.map((s, i) => (
+          <li>
+            <span class="ico"><Icon name={s.icon} size={20} /></span>
+            <div><h3>{s.title}</h3><p class="muted">{s.text}</p></div>
+            <span class="n">{i + 1}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+<style>
+  .panel { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 48px; padding: 48px; background: linear-gradient(135deg, var(--surface), #0e1828 70%); position: relative; overflow: hidden; }
+  .panel::after { content: ''; position: absolute; width: 360px; height: 360px; right: -120px; top: -140px; background: radial-gradient(closest-side, rgb(38 132 255 / .16), transparent); pointer-events: none; }
+  .left { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; position: relative; z-index: 1; }
+  .left :global(.head) { margin-bottom: 0; }
+  .disclaimer { font-size: 13px; color: var(--text-2); max-width: 420px; padding-left: 14px; border-left: 2px solid var(--line-strong); }
+  .steps { list-style: none; display: grid; gap: 12px; position: relative; z-index: 1; counter-reset: s; }
+  li { display: flex; gap: 16px; align-items: flex-start; padding: 18px 20px; background: rgb(8 13 24 / .45); border: 1px solid var(--line); border-radius: var(--r-md); position: relative; transition: border-color .2s; }
+  li:hover { border-color: rgb(38 132 255 / .4); }
+  .ico { width: 40px; height: 40px; flex: none; border-radius: 10px; display: grid; place-items: center; background: rgb(38 132 255 / .14); color: var(--soft-blue); }
+  h3 { font-size: 16px; margin-bottom: 4px; }
+  p.muted { font-size: 14px; }
+  .n { margin-left: auto; font-size: 12px; font-weight: 800; color: var(--text-2); }
+  @media (max-width: 1024px) { .panel { grid-template-columns: 1fr; padding: 32px; gap: 32px; } }
+  @media (max-width: 560px) { .panel { padding: 24px 16px; } .n { display: none; } .left .btn { width: 100%; } }
+</style>

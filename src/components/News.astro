@@ -1,0 +1,49 @@
+---
+import { ArrowRight } from '@lucide/astro';
+import SectionHead from './SectionHead.astro';
+import { articles } from '../data/content';
+---
+<section class="section" id="news" aria-labelledby="news-title">
+  <div class="container">
+    <SectionHead id="news-title" title="Новини та аналітика">
+      <a class="link" href="/news">Усі матеріали <ArrowRight size={16} aria-hidden="true" /></a>
+    </SectionHead>
+    <div class="grid">
+      {articles.map((a) => (
+        <article class="card card--hover art">
+          <div class="cover" style={`--h:${a.hue}`} aria-hidden="true">
+            <svg viewBox="0 0 320 160" preserveAspectRatio="xMidYMid slice">
+              {a.variant === 0 && (<g fill="none" stroke="rgb(255 255 255 / .35)" stroke-width="1.5">
+                <circle cx="220" cy="80" r="26" /><circle cx="220" cy="80" r="52" /><circle cx="220" cy="80" r="78" />
+                <path d="M0 120 L80 90 L140 104 L200 60" stroke="#fff" stroke-width="2.5" /></g>)}
+              {a.variant === 1 && (<g fill="rgb(255 255 255 / .14)" stroke="rgb(255 255 255 / .4)">
+                <rect x="40" y="44" width="70" height="90" rx="10" /><rect x="130" y="28" width="70" height="106" rx="10" /><rect x="220" y="60" width="70" height="74" rx="10" />
+                <path d="M54 70h42M54 88h30M144 56h42M144 74h30M234 86h42" stroke="#fff" stroke-width="2.5" stroke-linecap="round" /></g>)}
+              {a.variant === 2 && (<g fill="none" stroke="rgb(255 255 255 / .4)" stroke-width="1.5">
+                <rect x="60" y="40" width="130" height="80" rx="12" fill="rgb(255 255 255 / .1)" /><path d="M60 66h130" stroke="#fff" stroke-width="10" />
+                <path d="M80 98h40" stroke="#fff" stroke-width="2.5" /><circle cx="240" cy="90" r="34" /><circle cx="262" cy="90" r="34" /></g>)}
+            </svg>
+          </div>
+          <div class="body">
+            <div class="meta"><span class="badge badge--blue">{a.category}</span><time>{a.date}</time></div>
+            <h3>{a.title}</h3>
+            <p class="muted">{a.excerpt}</p>
+            <a class="link" href={a.href}>Читати далі <ArrowRight size={16} aria-hidden="true" /><span class="visually-hidden">: {a.title}</span></a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+<style>
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  .art { overflow: hidden; display: flex; flex-direction: column; }
+  .cover { height: 168px; background: linear-gradient(135deg, hsl(var(--h) 85% 45%), hsl(calc(var(--h) + 40) 75% 22%)); position: relative; }
+  .cover svg { width: 100%; height: 100%; display: block; }
+  .body { padding: 24px; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; flex: 1; }
+  .body .link { margin-top: auto; padding-top: 4px; }
+  .meta { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--text-2); }
+  p { font-size: 15px; }
+  @media (max-width: 1024px) { .grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+</style>

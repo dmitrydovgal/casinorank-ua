@@ -1,0 +1,19 @@
+﻿---
+import {
+  ShieldCheck, Database, Scale, RefreshCw, FileSearch, IdCard, CreditCard, LockKeyhole, HeartHandshake,
+  Landmark, CalendarCheck, Building, Link2, Smartphone, Headset, FileText,
+} from '@lucide/astro';
+import type { IconName } from '../data/content';
+
+interface Props { name: IconName; size?: number; class?: string }
+const { name, size = 20, class: cls } = Astro.props;
+const map = {
+  'shield-check': ShieldCheck, database: Database, scale: Scale, 'refresh-cw': RefreshCw, 'file-search': FileSearch,
+  'id-card': IdCard, 'credit-card': CreditCard, 'lock-keyhole': LockKeyhole, 'heart-handshake': HeartHandshake,
+  landmark: Landmark, 'calendar-check': CalendarCheck, 'building-2': Building, 'link-2': Link2,
+  smartphone: Smartphone, headset: Headset, 'file-text': FileText,
+};
+const Cmp = map[name];
+---
+<Cmp size={size} class={cls} aria-hidden="true" />
+

@@ -1,0 +1,36 @@
+---
+import { ArrowUpRight } from '@lucide/astro';
+import SectionHead from './SectionHead.astro';
+import Icon from './Icon.astro';
+import { guides } from '../data/content';
+---
+<section class="section" id="guides" aria-labelledby="guides-title">
+  <div class="container">
+    <SectionHead id="guides-title" title="Корисні матеріали" />
+    <ul class="grid">
+      {guides.map((g) => (
+        <li>
+          <a class="card card--hover g" href={g.href}>
+            <span class="ico"><Icon name={g.icon} size={22} /></span>
+            <h3>{g.title}</h3>
+            <p class="muted">{g.text}</p>
+            <ArrowUpRight class="arr" size={18} aria-hidden="true" />
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+<style>
+  .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 24px; }
+  li { grid-column: span 2; display: flex; }
+  li:nth-child(n+4) { grid-column: span 3; }
+  .g { position: relative; display: grid; gap: 8px; align-content: start; padding: 24px; width: 100%; }
+  .ico { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: rgb(38 132 255 / .12); color: var(--soft-blue); margin-bottom: 8px; transition: background .2s, color .2s; }
+  .g:hover .ico { background: var(--blue); color: #fff; }
+  p { font-size: 14px; }
+  .g :global(.arr) { position: absolute; top: 24px; right: 24px; color: var(--text-2); transition: color .2s, transform .2s; }
+  .g:hover :global(.arr) { color: var(--cyan); transform: translate(2px, -2px); }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } li, li:nth-child(n+4) { grid-column: auto; } li:last-child { grid-column: 1 / -1; } }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+</style>

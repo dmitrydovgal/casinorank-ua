@@ -1,0 +1,84 @@
+﻿---
+import { Search, ShieldCheck } from '@lucide/astro';
+import { heroShortcuts } from '../data/content';
+---
+<section class="hero" aria-labelledby="hero-title">
+  <img class="bg" src="/hero.webp" alt="" width="2000" height="668" fetchpriority="high" aria-hidden="true" />
+  <div class="shade" aria-hidden="true"></div>
+  <div class="container grid">
+    <div class="copy">
+      <span class="pill"><ShieldCheck size={14} aria-hidden="true" /> Незалежна платформа порівняння</span>
+      <h1 id="hero-title">Порівняння та огляди казино України</h1>
+      <p class="lead">Актуальна інформація про операторів, ліцензії, платіжні методи та особливості сервісів. Порівнюйте характеристики та перевіряйте дані.</p>
+
+      <form class="search" id="hero-search" role="search" autocomplete="off">
+        <label class="visually-hidden" for="op-query">Пошук оператора</label>
+        <Search size={20} class="si" aria-hidden="true" />
+        <input id="op-query" name="q" type="search" placeholder="Назва оператора, наприклад Alpha" />
+        <button class="btn btn--primary" type="submit" id="op-submit" disabled>Знайти</button>
+      </form>
+      <p class="hint" id="search-hint" role="status" aria-live="polite">Введіть назву, щоб відфільтрувати каталог нижче.</p>
+
+      <ul class="shortcuts" aria-label="Швидкі категорії">
+        {heroShortcuts.map((s) => <li><a href={s.href}>{s.label}</a></li>)}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero { position: relative; padding-block: 96px 104px; overflow: hidden; border-bottom: 1px solid var(--line); background: #021029; }
+  .bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 85% 50%; }
+  .shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgb(8 13 24 / .88) 0%, rgb(8 13 24 / .55) 40%, transparent 65%), linear-gradient(to bottom, transparent 70%, var(--bg)); pointer-events: none; }
+  .grid { position: relative; display: block; }
+  .copy { display: grid; gap: 24px; justify-items: start; }
+  .pill { display: inline-flex; align-items: center; gap: 8px; height: 32px; padding-inline: 14px; border-radius: 999px; font-size: 13px; font-weight: 700; color: var(--soft-blue); background: rgb(38 132 255 / .1); border: 1px solid rgb(38 132 255 / .25); }
+  h1 { max-width: 620px; }
+  .lead { font-size: 18px; color: var(--text-2); max-width: 540px; }
+  .search { width: 100%; max-width: 560px; display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 16px; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 16px; box-shadow: var(--shadow); transition: border-color .2s, box-shadow .2s; }
+  .search:focus-within { border-color: var(--blue); box-shadow: 0 0 0 4px rgb(38 132 255 / .15); }
+  .search :global(.si) { color: var(--text-2); flex: none; }
+  .search input { flex: 1; min-width: 0; height: 48px; background: transparent; border: 0; outline: 0; font-size: 16px; }
+  .search input::placeholder { color: #64748b; }
+  .search .btn { height: 48px; }
+  .hint { margin-top: -8px; font-size: 13px; color: var(--text-2); }
+  .shortcuts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .shortcuts a { display: inline-flex; align-items: center; height: 36px; padding-inline: 14px; border-radius: 999px; font-size: 14px; font-weight: 600; color: var(--text-2); border: 1px solid var(--line-strong); transition: color .2s, border-color .2s, background .2s; }
+  .shortcuts a:hover { color: var(--text); border-color: var(--blue); background: rgb(38 132 255 / .1); }
+  @media (max-width: 1024px) {
+    .hero { padding-block: 56px 320px; }
+    .bg { inset: auto 0 0 0; height: 300px; object-position: 80% 50%; }
+    .shade { background: linear-gradient(to bottom, transparent 55%, rgb(8 13 24 / .6) 100%); }
+  }
+  @media (max-width: 480px) { .search { flex-wrap: wrap; padding: 8px; } .search .btn { width: 100%; } .search input { flex: 1 1 calc(100% - 40px); } }
+</style>
+
+<script>
+  const form = document.getElementById('hero-search') as HTMLFormElement;
+  const input = document.getElementById('op-query') as HTMLInputElement;
+  const submit = document.getElementById('op-submit') as HTMLButtonElement;
+  const hint = document.getElementById('search-hint') as HTMLElement;
+
+  const run = () => {
+    const q = input.value.trim().toLowerCase();
+    const cards = document.querySelectorAll<HTMLElement>('[data-operator]');
+    let shown = 0;
+    cards.forEach((c) => {
+      const ok = !q || (c.dataset.operator ?? '').includes(q);
+      c.hidden = !ok;
+      if (ok) shown++;
+    });
+    const empty = document.getElementById('catalog-empty');
+    if (empty) empty.hidden = shown > 0;
+    hint.textContent = q ? (shown ? `Знайдено операторів: ${shown}` : 'Нічого не знайдено. Спробуйте іншу назву.') : 'Введіть назву, щоб відфільтрувати каталог нижче.';
+    return shown;
+  };
+
+  input.addEventListener('input', () => { submit.disabled = !input.value.trim(); if (!input.value.trim()) run(); });
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!input.value.trim()) return;
+    run();
+    document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
+  });
+</script>

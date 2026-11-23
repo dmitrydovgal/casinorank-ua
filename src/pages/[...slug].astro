@@ -1,0 +1,34 @@
+---
+// Placeholder pages for routes that are linked from the homepage but not built yet.
+import Base from '../layouts/Base.astro';
+import { ArrowLeft } from '@lucide/astro';
+import { operators, articles, guides, footerColumns } from '../data/content';
+import { offers } from '../data/offers';
+
+export function getStaticPaths() {
+  const routes = new Set<string>(['catalog', 'compare', 'news', 'guides', 'methodology']);
+  const add = (h: string) => { if (h.startsWith('/') && h !== '/') routes.add(h.slice(1).split('?')[0]); };
+  operators.forEach((o) => add(o.href));
+  offers.forEach((o) => { add(`/bonuses/${o.id}`); add(`/go/${o.id}`); });
+  articles.forEach((a) => add(a.href));
+  guides.forEach((g) => add(g.href));
+  footerColumns.forEach((c) => c.links.forEach((l) => add(l.href)));
+  const real = new Set(['bonuses', 'advertisers']); // have dedicated pages
+  return [...routes].filter((r) => !real.has(r)).map((slug) => ({ params: { slug } }));
+}
+---
+<Base title="Розділ у розробці — CasinoRank UA">
+  <section class="section">
+    <div class="container box">
+      <span class="badge badge--blue">Placeholder</span>
+      <h1>Цей розділ ще в розробці</h1>
+      <p class="muted">Сторінка <code>/{Astro.params.slug}</code> буде доступна пізніше. Це демонстраційна версія головної сторінки.</p>
+      <a class="btn btn--primary" href="/"><ArrowLeft size={18} aria-hidden="true" /> На головну</a>
+    </div>
+  </section>
+</Base>
+<style>
+  .box { display: grid; gap: 20px; justify-items: start; min-height: 50vh; align-content: center; }
+  code { background: var(--elevated); padding: 2px 8px; border-radius: 6px; color: var(--soft-blue); }
+  h1 { font-size: clamp(28px, 4vw, 44px); }
+</style>

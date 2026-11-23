@@ -1,0 +1,157 @@
+---
+import { ArrowRight, Check, Mail } from '@lucide/astro';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import SectionHead from '../components/SectionHead.astro';
+import { adFormats, adPrinciples, adSteps } from '../data/advertisers';
+import { siteConfig } from '../config/site';
+---
+<Base title="Рекламодавцям — CasinoRank UA" description="Комерційні пропозиції для операторів: статті, банери, розміщення пропозицій та позиція в каталозі.">
+  <section class="hero">
+    <div class="container">
+      <nav class="crumbs" aria-label="Навігаційний ланцюжок"><a href="/">Головна</a> / <span>Рекламодавцям</span></nav>
+      <span class="badge badge--blue">Для операторів та партнерів</span>
+      <h1>Розміщуйтеся там, де користувачі порівнюють оператори</h1>
+      <p class="muted lead">Надішліть комерційну пропозицію: статті, банери, інформаційні картки бонусів або пріоритетна позиція в каталозі. Ми підготуємо умови під ваше завдання.</p>
+      <div class="cta">
+        <a class="btn btn--primary" href="#request">Надіслати запит <ArrowRight size={18} aria-hidden="true" /></a>
+        <a class="btn btn--ghost" href="#formats">Формати співпраці</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="formats" aria-labelledby="formats-title">
+    <div class="container">
+      <SectionHead id="formats-title" title="Формати розміщення" text="Вартість та обсяги визначаються індивідуально — за запитом." />
+      <div class="formats">
+        {adFormats.map((f) => (
+          <article class="card card--hover fmt">
+            <span class="ico"><Icon name={f.icon} size={22} /></span>
+            <h3>{f.title}</h3>
+            <p class="muted">{f.text}</p>
+            <ul>{f.points.map((p) => <li><Check size={16} aria-hidden="true" /> {p}</li>)}</ul>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" aria-labelledby="principles-title">
+    <div class="container">
+      <SectionHead id="principles-title" title="Наші принципи" text="Прозорі правила розміщення зберігають довіру користувачів — а отже, і цінність розміщення для вас." />
+      <div class="principles">
+        {adPrinciples.map((p) => (
+          <div class="pr"><span class="ico"><Icon name={p.icon} size={22} /></span><div><h3>{p.title}</h3><p class="muted">{p.text}</p></div></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="steps-title">
+    <div class="container">
+      <SectionHead id="steps-title" title="Як це працює" />
+      <ol class="steps">
+        {adSteps.map((s, i) => <li class="card"><span class="n">{i + 1}</span><h3>{s.title}</h3><p class="muted">{s.text}</p></li>)}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" id="request" aria-labelledby="request-title">
+    <div class="container">
+      <div class="card req">
+        <div class="req-info">
+          <SectionHead id="request-title" title="Надіслати запит" text="Опишіть завдання — ми відповімо з комерційною пропозицією." />
+          <p class="muted small">Форма відкриє ваш поштовий клієнт із підготовленим листом. Дані нікуди не надсилаються автоматично.</p>
+          <a class="mail" href={`mailto:${siteConfig.contact.advertising}`}><Mail size={18} aria-hidden="true" /> {siteConfig.contact.advertising}</a>
+        </div>
+        <form id="ad-form" novalidate>
+          <div class="row">
+            <label>Компанія / бренд<input name="company" required autocomplete="organization" /></label>
+            <label>Контактна особа<input name="person" required autocomplete="name" /></label>
+          </div>
+          <div class="row">
+            <label>E-mail<input name="email" type="email" required autocomplete="email" /></label>
+            <label>Сайт<input name="site" type="url" placeholder="https://" autocomplete="url" /></label>
+          </div>
+          <fieldset>
+            <legend>Що вас цікавить</legend>
+            <div class="opts">
+              {adFormats.map((f) => <label class="chip"><input type="checkbox" name="format" value={f.title} /><span>{f.title}</span></label>)}
+            </div>
+          </fieldset>
+          <label>Повідомлення<textarea name="message" rows="4" placeholder="Цілі, терміни, бажані формати"></textarea></label>
+          <p class="err" id="ad-err" role="alert" hidden></p>
+          <button class="btn btn--primary" type="submit">Підготувати лист <ArrowRight size={18} aria-hidden="true" /></button>
+        </form>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero { padding-block: 56px 72px; border-bottom: 1px solid var(--line); background: radial-gradient(ellipse at 80% 0%, rgb(38 132 255 / .16), transparent 60%); }
+  .hero .container { display: grid; gap: 20px; justify-items: start; }
+  .crumbs { font-size: 14px; color: var(--text-2); }
+  .crumbs a:hover { color: var(--text); }
+  .hero h1 { max-width: 800px; }
+  .lead { font-size: 18px; max-width: 680px; }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+  .alt { background: linear-gradient(to bottom, transparent, rgb(16 26 43 / .55) 20%, rgb(16 26 43 / .55) 80%, transparent); }
+  .ico { width: 44px; height: 44px; flex: none; border-radius: 12px; display: grid; place-items: center; background: rgb(38 132 255 / .12); color: var(--soft-blue); }
+  .formats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+  .fmt { padding: 24px; display: grid; gap: 12px; align-content: start; }
+  .fmt p { font-size: 15px; }
+  .fmt ul { display: grid; gap: 8px; margin-top: 8px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 14px; }
+  .fmt li { display: flex; gap: 8px; align-items: center; }
+  .fmt li :global(svg) { color: var(--ok); flex: none; }
+  .principles { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .pr { display: flex; gap: 16px; padding: 24px; border: 1px solid var(--line); border-radius: var(--r-lg); background: rgb(8 13 24 / .5); }
+  .pr h3 { margin-bottom: 4px; } .pr p { font-size: 15px; }
+  .steps { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+  .steps li { padding: 24px; display: grid; gap: 8px; align-content: start; }
+  .n { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; background: var(--grad-blue); color: #fff; margin-bottom: 8px; }
+  .steps p { font-size: 14px; }
+  .req { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 48px; padding: 48px; background: linear-gradient(135deg, var(--surface), #0e1828 70%); }
+  .req-info { display: grid; gap: 20px; align-content: start; }
+  .req-info :global(.head) { margin-bottom: 0; }
+  .small { font-size: 14px; }
+  .mail { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; color: var(--soft-blue); }
+  .mail:hover { color: var(--cyan); }
+  form { display: grid; gap: 20px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  label { display: grid; gap: 8px; font-size: 14px; font-weight: 600; color: var(--text-2); }
+  input:not([type=checkbox]), textarea { width: 100%; min-height: 48px; padding: 12px 16px; border-radius: var(--r-md); background: var(--bg); border: 1px solid var(--line-strong); color: var(--text); font-size: 16px; outline: 0; transition: border-color .2s, box-shadow .2s; }
+  textarea { resize: vertical; }
+  input:not([type=checkbox]):focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgb(38 132 255 / .15); }
+  input.invalid { border-color: var(--bad); }
+  fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 12px; }
+  legend { font-size: 14px; font-weight: 600; color: var(--text-2); padding: 0 0 12px; }
+  .opts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { display: inline-flex; position: relative; }
+  .chip input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+  .chip span { display: inline-flex; align-items: center; height: 40px; padding-inline: 16px; border-radius: 999px; border: 1px solid var(--line-strong); font-size: 14px; font-weight: 700; color: var(--text-2); transition: all .2s; }
+  .chip input:checked + span { background: rgb(38 132 255 / .14); border-color: var(--blue); color: var(--text); }
+  .chip input:focus-visible + span { outline: 2px solid var(--cyan); outline-offset: 3px; }
+  .err { color: var(--bad); font-size: 14px; }
+  form .btn { justify-self: start; }
+  @media (max-width: 1100px) { .formats, .steps { grid-template-columns: 1fr 1fr; } .req { grid-template-columns: 1fr; padding: 32px; gap: 32px; } }
+  @media (max-width: 640px) { .formats, .steps, .principles, .row { grid-template-columns: 1fr; } .req { padding: 24px 16px; } form .btn, .cta .btn { width: 100%; } .hero { padding-block: 40px 48px; } }
+</style>
+
+<script define:vars={{ to: siteConfig.contact.advertising }}>
+  const form = document.getElementById('ad-form');
+  const err = document.getElementById('ad-err');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const fd = new FormData(form);
+    const bad = ['company', 'person', 'email'].filter((k) => !String(fd.get(k) || '').trim() || (k === 'email' && !form.elements.email.checkValidity()));
+    form.querySelectorAll('input').forEach((i) => i.classList.toggle('invalid', bad.includes(i.name)));
+    err.hidden = bad.length === 0;
+    if (bad.length) { err.textContent = 'Заповніть обов’язкові поля: компанія, контактна особа та коректний e-mail.'; return; }
+    const lines = [
+      `Компанія: ${fd.get('company')}`, `Контактна особа: ${fd.get('person')}`, `E-mail: ${fd.get('email')}`,
+      `Сайт: ${fd.get('site') || '—'}`, `Формати: ${fd.getAll('format').join(', ') || '—'}`, '', String(fd.get('message') || ''),
+    ];
+    location.href = `mailto:${to}?subject=${encodeURIComponent('Комерційна пропозиція: ' + fd.get('company'))}&body=${encodeURIComponent(lines.join('\n'))}`;
+  });
+</script>

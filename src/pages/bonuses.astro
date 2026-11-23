@@ -1,0 +1,181 @@
+---
+import { SlidersHorizontal, TriangleAlert, X } from '@lucide/astro';
+import Base from '../layouts/Base.astro';
+import BonusCard from '../components/BonusCard.astro';
+import { offers, bonusTypes, amountRanges } from '../data/offers';
+import { operators } from '../data/content';
+---
+<Base title="Бонуси операторів — CasinoRank UA" description="Каталог інформаційних пропозицій операторів з фільтрами за оператором, розміром бонусу та вимогами.">
+  <section class="page">
+    <div class="container">
+      <nav class="crumbs" aria-label="Навігаційний ланцюжок"><a href="/">Головна</a> / <span>Бонуси</span></nav>
+      <h1>Бонуси операторів</h1>
+      <p class="muted lead">Порівнюйте розмір бонусу, вимоги до реєстрації, верифікації та депозиту.</p>
+      <div class="notice" role="note">
+        <TriangleAlert size={18} aria-hidden="true" />
+        <span>Усі пропозиції на сторінці — вигадані демонстраційні приклади, а не діючі бонуси.</span>
+      </div>
+
+      <div class="layout">
+        <button type="button" class="btn btn--ghost toggle" id="filters-toggle" aria-expanded="false" aria-controls="filters">
+          <SlidersHorizontal size={18} aria-hidden="true" /> Фільтри
+        </button>
+
+        <aside class="card side" id="filters" aria-label="Фільтри бонусів">
+          <form id="filter-form">
+            <div class="side-head">
+              <h2>Фільтри</h2>
+              <button type="reset" class="reset"><X size={14} aria-hidden="true" /> Скинути</button>
+            </div>
+
+            <fieldset>
+              <legend>Оператор</legend>
+              {operators.map((o) => <label class="check"><input type="checkbox" name="op" value={o.id} /><span>{o.name}</span></label>)}
+            </fieldset>
+
+            <fieldset>
+              <legend>Розмір бонусу</legend>
+              {amountRanges.map((r, i) => <label class="check radio"><input type="radio" name="amount" value={r.id} data-min={r.min} data-max={Number.isFinite(r.max) ? r.max : ''} checked={i === 0} /><span>{r.label}</span></label>)}
+            </fieldset>
+
+            <fieldset>
+              <legend>Реєстрація</legend>
+              <label class="check radio"><input type="radio" name="reg" value="any" checked /><span>Будь-яка</span></label>
+              <label class="check radio"><input type="radio" name="reg" value="none" /><span>Без реєстрації</span></label>
+              <label class="check radio"><input type="radio" name="reg" value="required" /><span>З реєстрацією</span></label>
+            </fieldset>
+
+            <fieldset>
+              <legend>Депозит</legend>
+              <label class="check radio"><input type="radio" name="dep" value="any" checked /><span>Будь-який</span></label>
+              <label class="check radio"><input type="radio" name="dep" value="none" /><span>Без депозиту</span></label>
+              <label class="check radio"><input type="radio" name="dep" value="required" /><span>З депозитом</span></label>
+            </fieldset>
+
+            <fieldset>
+              <legend>Верифікація</legend>
+              <label class="check radio"><input type="radio" name="ver" value="any" checked /><span>Будь-яка</span></label>
+              <label class="check radio"><input type="radio" name="ver" value="none" /><span>Без верифікації</span></label>
+              <label class="check radio"><input type="radio" name="ver" value="required" /><span>З верифікацією</span></label>
+            </fieldset>
+
+            <fieldset>
+              <legend>Тип бонусу</legend>
+              {bonusTypes.map((t) => <label class="check"><input type="checkbox" name="type" value={t} /><span>{t}</span></label>)}
+            </fieldset>
+          </form>
+        </aside>
+
+        <div class="content">
+          <div class="bar">
+            <p id="count" role="status" aria-live="polite">Знайдено: {offers.length}</p>
+            <label class="sort">
+              <span class="muted">Сортування:</span>
+              <select id="sort">
+                <option value="amount-desc">Розмір бонусу: від більшого</option>
+                <option value="amount-asc">Розмір бонусу: від меншого</option>
+                <option value="exp-asc">Скоро завершується</option>
+              </select>
+            </label>
+          </div>
+          <div class="grid" id="grid">
+            {offers.map((o) => <BonusCard offer={o} />)}
+          </div>
+          <p class="empty" id="empty" hidden>За вибраними фільтрами нічого не знайдено. <button type="button" class="link" id="empty-reset">Скинути фільтри</button></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .page { padding-block: 40px 24px; }
+  .crumbs { font-size: 14px; color: var(--text-2); margin-bottom: 16px; }
+  .crumbs a:hover { color: var(--text); }
+  .lead { font-size: 17px; margin-top: 8px; max-width: 640px; }
+  .notice { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; margin-block: 24px 32px; border-radius: var(--r-md); background: rgb(244 184 74 / .08); border: 1px solid rgb(244 184 74 / .25); color: #f6d08a; font-size: 14px; }
+  .notice :global(svg) { flex: none; margin-top: 2px; color: var(--warn); }
+  .layout { display: grid; grid-template-columns: 288px minmax(0, 1fr); gap: 32px; align-items: start; }
+  .toggle { display: none; }
+  .side { padding: 24px; position: sticky; top: calc(var(--header-h) + 16px); max-height: calc(100vh - var(--header-h) - 32px); overflow-y: auto; }
+  .side-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .side-head h2 { font-size: 18px; }
+  .reset { display: inline-flex; align-items: center; gap: 4px; background: none; border: 0; color: var(--soft-blue); font-weight: 700; font-size: 13px; cursor: pointer; }
+  .reset:hover { color: var(--cyan); }
+  fieldset { border: 0; border-top: 1px solid var(--line); margin: 0; padding: 20px 0 12px; display: grid; gap: 4px; }
+  legend { float: left; width: 100%; padding: 0 0 12px; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: var(--text-2); }
+  legend + * { clear: both; }
+  .check { display: flex; align-items: center; gap: 12px; min-height: 36px; cursor: pointer; font-size: 15px; font-weight: 500; }
+  .check input { appearance: none; -webkit-appearance: none; width: 20px; height: 20px; flex: none; margin: 0; border: 1.5px solid var(--line-strong); background: var(--bg); border-radius: 6px; display: grid; place-items: center; cursor: pointer; transition: all .15s; }
+  .check.radio input { border-radius: 50%; }
+  .check input::after { content: ''; width: 8px; height: 8px; border-radius: 2px; background: #fff; transform: scale(0); transition: transform .15s; }
+  .check.radio input::after { border-radius: 50%; }
+  .check input:checked { background: var(--blue); border-color: var(--blue); }
+  .check input:checked::after { transform: scale(1); }
+  .check:hover input { border-color: var(--blue); }
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  #count { font-weight: 700; }
+  .sort { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+  select { height: 44px; padding-inline: 14px; border-radius: var(--r-md); background: var(--surface); border: 1px solid var(--line-strong); color: var(--text); font-weight: 600; cursor: pointer; }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+  .empty { padding: 48px 24px; text-align: center; color: var(--text-2); border: 1px dashed var(--line-strong); border-radius: var(--r-lg); }
+  .empty .link { background: none; border: 0; cursor: pointer; }
+  @media (max-width: 1100px) { .layout { grid-template-columns: 260px minmax(0, 1fr); gap: 24px; } .grid { grid-template-columns: 1fr; } }
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; gap: 16px; }
+    .toggle { display: inline-flex; justify-self: start; }
+    .side { display: none; position: static; max-height: none; }
+    .side.open { display: block; }
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } .sort { width: 100%; } .sort select { flex: 1; } }
+</style>
+
+<script>
+  const form = document.getElementById('filter-form') as HTMLFormElement;
+  const grid = document.getElementById('grid') as HTMLElement;
+  const cards = [...grid.querySelectorAll<HTMLElement>('[data-offer]')];
+  const count = document.getElementById('count')!;
+  const empty = document.getElementById('empty')!;
+  const sort = document.getElementById('sort') as HTMLSelectElement;
+  const side = document.getElementById('filters')!;
+  const toggle = document.getElementById('filters-toggle')!;
+
+  const apply = () => {
+    const fd = new FormData(form);
+    const ops = fd.getAll('op') as string[];
+    const types = fd.getAll('type') as string[];
+    const reg = fd.get('reg'), dep = fd.get('dep'), ver = fd.get('ver');
+    const sel = form.querySelector<HTMLInputElement>('input[name=amount]:checked')!;
+    const min = Number(sel.dataset.min), max = sel.dataset.max ? Number(sel.dataset.max) : Infinity;
+
+    let shown = 0;
+    cards.forEach((c) => {
+      const d = c.dataset, amt = Number(d.amount);
+      const ok =
+        (!ops.length || ops.includes(d.op!)) &&
+        (!types.length || types.includes(d.type!)) &&
+        (reg === 'any' || d.reg === reg) && (dep === 'any' || d.dep === dep) && (ver === 'any' || d.ver === ver) &&
+        (sel.value === 'any' || (amt > min && amt <= max));
+      c.hidden = !ok;
+      if (ok) shown++;
+    });
+
+    const [key, dir] = sort.value.split('-');
+    const val = (c: HTMLElement) => key === 'amount' ? Number(c.dataset.amount) : Date.parse(c.dataset.exp!);
+    [...cards].sort((a, b) => (dir === 'desc' ? val(b) - val(a) : val(a) - val(b))).forEach((c) => grid.appendChild(c));
+
+    count.textContent = `Знайдено: ${shown}`;
+    empty.hidden = shown > 0;
+  };
+
+  form.addEventListener('change', apply);
+  form.addEventListener('reset', () => setTimeout(apply));
+  sort.addEventListener('change', apply);
+  document.getElementById('empty-reset')!.addEventListener('click', () => { form.reset(); });
+  toggle.addEventListener('click', () => {
+    const open = side.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', String(open));
+  });
+  apply();
+</script>

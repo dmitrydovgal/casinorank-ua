@@ -1,0 +1,82 @@
+---
+import { Search, Menu, X } from '@lucide/astro';
+import Logo from './Logo.astro';
+import { navItems, siteConfig } from '../config/site';
+
+const items = navItems.filter((i) => siteConfig.features.offers || i.href !== '/bonuses');
+// Section anchors work from any page.
+const resolve = (href: string) => (href.startsWith('#') ? `/${href}` : href);
+---
+<header class="header" id="site-header">
+  <div class="container bar">
+    <Logo />
+    <nav class="nav" aria-label="Основна навігація">
+      {items.map((i) => <a href={resolve(i.href)} data-nav={i.href.startsWith('#') ? i.href : undefined}>{i.label}</a>)}
+    </nav>
+    <div class="actions">
+      <a href="/#hero-search" class="icon-btn" aria-label="Пошук операторів"><Search size={20} /></a>
+      <button class="icon-btn menu-btn" id="menu-btn" aria-expanded="false" aria-controls="mobile-nav" aria-label="Відкрити меню">
+        <Menu size={22} class="i-open" /><X size={22} class="i-close" />
+      </button>
+    </div>
+  </div>
+  <nav class="mobile" id="mobile-nav" aria-label="Мобільна навігація" hidden>
+    <div class="container">
+      {items.map((i) => <a href={resolve(i.href)}>{i.label}</a>)}
+    </div>
+  </nav>
+</header>
+
+<style>
+  .header { position: sticky; top: 0; z-index: 50; background: rgb(8 13 24 / .82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
+  .bar { height: var(--header-h); display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .nav { display: flex; gap: 4px; }
+  .nav a { padding: 8px 12px; white-space: nowrap; border-radius: 10px; font-weight: 600; font-size: 15px; color: var(--text-2); transition: color .2s, background .2s; }
+  .nav a:hover { color: var(--text); background: rgb(255 255 255 / .05); }
+  .nav a.active { color: var(--soft-blue); background: rgb(38 132 255 / .12); }
+  .actions { display: flex; gap: 8px; }
+  .icon-btn { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; border: 1px solid var(--line-strong); background: transparent; color: var(--text); cursor: pointer; transition: border-color .2s, background .2s; }
+  .icon-btn:hover { border-color: var(--blue); background: rgb(38 132 255 / .1); }
+  .menu-btn { display: none; }
+  .i-close { display: none; }
+  .menu-btn[aria-expanded='true'] .i-open { display: none; }
+  .menu-btn[aria-expanded='true'] .i-close { display: block; }
+  .mobile { border-top: 1px solid var(--line); background: var(--bg); padding-block: 8px 16px; }
+  .mobile a { display: block; padding: 14px 8px; font-weight: 600; border-bottom: 1px solid var(--line); }
+  @media (max-width: 1100px) { .nav a { padding-inline: 8px; font-size: 14px; } .bar { gap: 12px; } }
+  @media (max-width: 960px) {
+    .nav { display: none; }
+    .menu-btn { display: grid; }
+    .bar { height: 72px; }
+  }
+</style>
+
+<script>
+  const btn = document.getElementById('menu-btn') as HTMLButtonElement;
+  const panel = document.getElementById('mobile-nav') as HTMLElement;
+  const setOpen = (open: boolean) => {
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('aria-label', open ? 'Закрити меню' : 'Відкрити меню');
+    panel.hidden = !open;
+  };
+  btn.addEventListener('click', () => setOpen(btn.getAttribute('aria-expanded') !== 'true'));
+  panel.addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('a')) setOpen(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
+  window.matchMedia('(min-width: 961px)').addEventListener('change', (m) => m.matches && setOpen(false));
+
+  // Active state for page links
+  document.querySelectorAll<HTMLAnchorElement>('.nav a:not([data-nav])').forEach((a) => {
+    if (a.getAttribute('href') === location.pathname) a.classList.add('active');
+  });
+
+  // Active state for in-page sections
+  const links = document.querySelectorAll<HTMLAnchorElement>('.nav a[data-nav]');
+  if (links.length && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting) links.forEach((l) => l.classList.toggle('active', l.dataset.nav === '#' + en.target.id));
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    links.forEach((l) => { const t = document.querySelector(l.dataset.nav!); if (t) io.observe(t); });
+  }
+</script>

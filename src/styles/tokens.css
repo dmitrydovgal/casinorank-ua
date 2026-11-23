@@ -1,0 +1,45 @@
+:root {
+  /* Surfaces */
+  --bg: #080d18;
+  --surface: #101a2b;
+  --elevated: #17243a;
+
+  /* Accent */
+  --blue: #2684ff;
+  --cyan: #36c5f0;
+  --soft-blue: #8ab8ff;
+
+  /* Text */
+  --text: #f3f6fc;
+  --text-2: #94a3b8;
+
+  /* Status */
+  --ok: #27c58b;
+  --warn: #f4b84a;
+  --bad: #f06b76;
+
+  /* Lines */
+  --line: rgb(255 255 255 / 0.07);
+  --line-strong: rgb(255 255 255 / 0.12);
+
+  /* Radii */
+  --r-md: 12px;
+  --r-lg: 16px;
+
+  /* 8px spacing scale */
+  --s1: 8px;
+  --s2: 16px;
+  --s3: 24px;
+  --s4: 32px;
+  --s5: 40px;
+  --s6: 48px;
+  --s8: 64px;
+  --s10: 80px;
+  --s12: 96px;
+
+  --shadow: 0 12px 32px rgb(0 0 0 / 0.32);
+  --grad-blue: linear-gradient(135deg, #2684ff, #36c5f0);
+  --container: 1240px;
+  --header-h: 80px;
+  --font: 'Manrope Variable', 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}

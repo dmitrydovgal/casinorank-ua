@@ -1,0 +1,19 @@
+---
+interface Props { title: string; text?: string; eyebrow?: string; align?: 'left' | 'center'; id?: string }
+const { title, text, eyebrow, align = 'left', id } = Astro.props;
+---
+<div class={`head ${align}`}>
+  <div class="txt">
+    {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+    <h2 id={id}>{title}</h2>
+    {text && <p class="muted">{text}</p>}
+  </div>
+  <slot />
+</div>
+<style>
+  .head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: var(--s6); flex-wrap: wrap; }
+  .head.center { flex-direction: column; align-items: center; text-align: center; }
+  .txt { max-width: 640px; display: grid; gap: 12px; }
+  .eyebrow { font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--cyan); }
+  p { font-size: 17px; }
+</style>

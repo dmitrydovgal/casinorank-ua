@@ -1,0 +1,62 @@
+---
+import { ArrowRight, CalendarClock, Gift } from '@lucide/astro';
+import { formatAmount, formatDate, label, type Offer } from '../data/offers';
+interface Props { offer: Offer }
+const { offer: o } = Astro.props;
+---
+<article class="card card--hover bonus"
+  data-offer data-op={o.operatorId} data-amount={o.amount} data-reg={o.registration}
+  data-type={o.type} data-dep={o.deposit} data-ver={o.verification} data-exp={o.expires}>
+  <header>
+    <span class="logo" style={`--h:${o.hue}`} aria-hidden="true">{o.initials}</span>
+    <div>
+      <h3>{o.operator}</h3>
+      <span class="badge badge--blue">{o.type}</span>
+    </div>
+  </header>
+
+  <div class="amount">
+    <span class="cap"><Gift size={14} aria-hidden="true" /> Розмір бонусу</span>
+    <strong>до {formatAmount(o.amount)}</strong>
+    <small>{o.amountNote}</small>
+    {o.freeSpins && <span class="spins">+ {o.freeSpins} фріспінів</span>}
+  </div>
+
+  <dl>
+    <div><dt>Реєстрація</dt><dd class={o.registration === 'none' ? 'ok' : ''}>{label.registration[o.registration]}</dd></div>
+    <div><dt>Верифікація</dt><dd class={o.verification === 'none' ? 'ok' : ''}>{label.verification[o.verification]}</dd></div>
+    <div><dt>Депозит</dt><dd class={o.deposit === 'none' ? 'ok' : ''}>{o.depositNote}</dd></div>
+  </dl>
+
+  <footer>
+    <span class="exp"><CalendarClock size={14} aria-hidden="true" /> Приклад терміну: {formatDate(o.expires)}</span>
+    <a class="btn btn--primary" href={`/go/${o.id}`} rel="sponsored noopener">Отримати бонус <ArrowRight size={18} aria-hidden="true" /></a>
+    <a class="terms" href={`/bonuses/${o.id}`}>Умови пропозиції</a>
+  </footer>
+</article>
+
+<style>
+  .bonus { padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+  .bonus[hidden] { display: none; }
+  header { display: flex; gap: 14px; align-items: center; }
+  header > div { display: grid; gap: 6px; justify-items: start; }
+  h3 { font-size: 17px; }
+  .logo { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-weight: 800; font-size: 19px; color: #fff; flex: none;
+    background: linear-gradient(145deg, hsl(var(--h) 85% 58%), hsl(calc(var(--h) + 30) 80% 38%)); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .2); }
+  .amount { display: grid; gap: 4px; padding: 18px 20px; border-radius: var(--r-md); border: 1px solid rgb(38 132 255 / .35);
+    background: linear-gradient(135deg, rgb(38 132 255 / .18), rgb(54 197 240 / .06)); }
+  .cap { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--soft-blue); text-transform: uppercase; letter-spacing: .08em; }
+  strong { font-size: 32px; line-height: 1.15; font-weight: 800; letter-spacing: -0.02em; background: var(--grad-blue); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  small { font-size: 13px; color: var(--text-2); }
+  .spins { justify-self: start; margin-top: 8px; font-size: 13px; font-weight: 700; color: var(--text); background: rgb(255 255 255 / .08); padding: 4px 10px; border-radius: 999px; }
+  dl { margin: 0; border-top: 1px solid var(--line); }
+  dl div { display: flex; justify-content: space-between; gap: 16px; padding-block: 11px; border-bottom: 1px solid var(--line); font-size: 14px; }
+  dt { color: var(--text-2); }
+  dd { margin: 0; font-weight: 600; text-align: right; }
+  dd.ok { color: var(--ok); }
+  footer { margin-top: auto; display: grid; gap: 12px; }
+  .exp { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; color: var(--text-2); }
+  footer .btn { width: 100%; }
+  .terms { text-align: center; font-size: 14px; font-weight: 600; color: var(--text-2); transition: color .2s; }
+  .terms:hover { color: var(--soft-blue); }
+</style>

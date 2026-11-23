@@ -1,0 +1,40 @@
+---
+import Logo from './Logo.astro';
+import { footerColumns } from '../data/content';
+---
+<footer class="footer">
+  <div class="container">
+    <div class="top">
+      <div class="brand">
+        <Logo />
+        <p class="muted">Незалежна інформаційна платформа та агрегатор порівняння операторів. Ми не є онлайн-казино й не приймаємо ставок.</p>
+      </div>
+      {footerColumns.map((c) => (
+        <nav aria-label={c.title}>
+          <h4>{c.title}</h4>
+          <ul>{c.links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}</ul>
+        </nav>
+      ))}
+    </div>
+    <div class="legal">
+      <p><span class="age">18+</span> Азартні ігри можуть викликати залежність. Матеріали сайту мають інформаційний характер і не є рекламою чи закликом до участі в іграх. Участь дозволена лише особам, які досягли повноліття, та лише в межах чинного законодавства України.</p>
+      <p>Усі оператори, оцінки, пропозиції та дати на цій сторінці — вигадані демонстраційні дані. Перевіряйте ліцензійний статус в офіційних реєстрах.</p>
+    </div>
+    <div class="bottom">© 2026 CasinoRank UA. Усі права захищено.</div>
+  </div>
+</footer>
+<style>
+  .footer { margin-top: var(--s8); border-top: 1px solid var(--line); background: #060a14; padding-top: var(--s10); }
+  .top { display: grid; grid-template-columns: 1.6fr repeat(3, 1fr); gap: 48px; padding-bottom: 48px; }
+  .brand { display: grid; gap: 20px; align-content: start; max-width: 340px; }
+  .brand p { font-size: 14px; }
+  h4 { margin: 0 0 16px; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-2); }
+  ul { display: grid; gap: 12px; }
+  nav a { font-size: 15px; font-weight: 600; transition: color .2s; }
+  nav a:hover { color: var(--cyan); }
+  .legal { display: grid; gap: 12px; padding-block: 32px; border-block: 1px solid var(--line); font-size: 13px; color: var(--text-2); max-width: 900px; border-right: 0; }
+  .age { display: inline-grid; place-items: center; height: 22px; padding-inline: 7px; margin-right: 8px; border-radius: 6px; font-weight: 800; font-size: 12px; color: var(--warn); border: 1px solid rgb(244 184 74 / .5); }
+  .bottom { padding-block: 24px 32px; font-size: 13px; color: var(--text-2); }
+  @media (max-width: 900px) { .top { grid-template-columns: 1fr 1fr; gap: 40px 24px; } .brand { grid-column: 1 / -1; max-width: none; } }
+  @media (max-width: 480px) { .top { grid-template-columns: 1fr; } }
+</style>
